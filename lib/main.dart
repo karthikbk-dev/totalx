@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:totalx_machine_test/viewmodel/mobileauth.dart';
-import 'package:totalx_machine_test/viewmodel/otp_auth.dart';
+import 'package:totalx_machine_test/View/Frame1.dart';
+import 'package:totalx_machine_test/View/home.dart';
+import 'package:totalx_machine_test/View/mobileauth.dart';
+import 'package:totalx_machine_test/View/otp_auth.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:totalx_machine_test/View/otp_auth.dart';
 
 class MobileAuth extends StatelessWidget {
   MobileAuth({super.key});
@@ -98,20 +99,28 @@ class MobileAuth extends StatelessWidget {
               ),
               SizedBox(height: 30),
               Center(
-                child: Container(
-                  height: 50,
-                  width: 328,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF100E09),
-                    borderRadius: BorderRadius.circular(60),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Get OTP",
-                      style: TextStyle(
-                        color: Color(0xFFFFFFFF),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => OtpAuth()),
+                    );
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 328,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF100E09),
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Get OTP",
+                        style: TextStyle(
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),

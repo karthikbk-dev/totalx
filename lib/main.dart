@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:totalx_machine_test/viewmodel/mobileauth.dart';
+import 'package:totalx_machine_test/viewmodel/otp_auth.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,8 +14,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'totalx',
       theme: ThemeData(
+        textTheme: GoogleFonts.montserratTextTheme(),
         // This is the theme of your application.
         //
         // TRY THIS: Try running your application with "flutter run". You'll see

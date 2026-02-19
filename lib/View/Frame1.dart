@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:totalx_machine_test/Viewmodel/user_provider.dart';
 
 class newuser extends StatelessWidget {
   const newuser({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context);
+    final namecontroller = TextEditingController();
+    final agecontroller = TextEditingController();
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
       child: Padding(
@@ -55,6 +61,7 @@ class newuser extends StatelessWidget {
             const Text("Name", style: TextStyle(color: Color(0xFF333333))),
             const SizedBox(height: 8),
             TextField(
+              controller: namecontroller,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                 border: OutlineInputBorder(
@@ -69,6 +76,7 @@ class newuser extends StatelessWidget {
             Text("Age", style: TextStyle(color: Color(0xFF333333))),
             SizedBox(height: 8),
             TextField(
+              controller: agecontroller,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 15),
@@ -105,7 +113,12 @@ class newuser extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    provider.adduser(
+                      name: namecontroller.text,
+                      age: agecontroller.text,
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,

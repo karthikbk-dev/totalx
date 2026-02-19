@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:totalx_machine_test/View/Frame1.dart';
+import 'package:totalx_machine_test/Viewmodel/user_provider.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController search_controller = TextEditingController();
+    final provider = Provider.of<UserProvider>(context);
+    final search_controller = TextEditingController();
+    final namectrl = TextEditingController();
+    final agectrl = TextEditingController();
     return Scaffold(
+      backgroundColor: Color(0xFFEBEBEB),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
@@ -78,7 +84,9 @@ class Home extends StatelessWidget {
 
           Expanded(
             child: ListView.builder(
-              itemCount: 10,
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: provider.userdetails.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -86,7 +94,7 @@ class Home extends StatelessWidget {
                     height: 76,
                     width: 340,
                     decoration: BoxDecoration(
-                      border: Border.all(),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
@@ -98,28 +106,49 @@ class Home extends StatelessWidget {
                               child: CircleAvatar(
                                 radius: 30,
                                 backgroundImage: AssetImage(
-                                  'assets/images/vidheyan.jpg',
+                                  'assets/images/login_image.png',
                                 ),
                               ),
                             ),
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                "Name",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      provider.userdetails[index].name ??
+                                          'no name',
+
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              Text(
-                                "Age :34",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Age :",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+
+                                    Text(
+                                      provider.userdetails[index].age ?? "",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),

@@ -12,6 +12,8 @@ class UserProvider extends ChangeNotifier {
   Uint8List? imageBytes;
   String? base64Image;
 
+  set filtereduserdetails(List<Usermodel> filtereduserdetails) {}
+
   Future<void> fetchdata() async {
     final storage = await SharedPreferences.getInstance();
     final data = storage.getString("userdata");
@@ -68,5 +70,16 @@ class UserProvider extends ChangeNotifier {
     } catch (e) {
       throw "error: $e";
     }
+  }
+
+  //...............sort...........
+
+  void sortByAge(bool ascending) {
+    userdetails.sort((a, b) {
+      final ageA = int.tryParse(a.age ?? '') ?? 0;
+      final ageB = int.tryParse(b.age ?? '') ?? 0;
+
+      return ascending ? ageB.compareTo(ageA) : ageA.compareTo(ageB);
+    });
   }
 }

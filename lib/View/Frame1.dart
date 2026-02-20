@@ -37,6 +37,10 @@ class newuser extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.blue,
+                      backgroundImage: provider.imageBytes != null
+                          ? MemoryImage(provider.imageBytes!)
+                          : AssetImage("assets/images/testimag.jpeg"),
+
                       child: Icon(Icons.person, size: 70, color: Colors.white),
                     ),
                   ),

@@ -4,7 +4,9 @@ import 'package:totalx_machine_test/View/Frame1.dart';
 import 'package:totalx_machine_test/Viewmodel/user_provider.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  Home({super.key});
+
+  String? sortvalueradiobutton = 'ALL';
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +14,7 @@ class Home extends StatelessWidget {
     final search_controller = TextEditingController();
     final namectrl = TextEditingController();
     final agectrl = TextEditingController();
+    final searchFilterCtr = TextEditingController();
     return Scaffold(
       backgroundColor: Color(0xFFEBEBEB),
       floatingActionButton: FloatingActionButton(
@@ -63,18 +66,118 @@ class Home extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 5),
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.filter_list,
-                      color: Colors.white,
-                      size: 25,
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      backgroundColor: Colors.white,
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(
+                          builder: (context, setStateSheet) {
+                            return Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Sort", style: TextStyle(fontSize: 18)),
+
+                                  SizedBox(height: 20),
+                                  RadioListTile(
+                                    value: 'All',
+                                    groupValue: sortvalueradiobutton,
+                                    onChanged: (value) {
+                                      setStateSheet(() {
+                                        sortvalueradiobutton = value!;
+                                      });
+                                      if (value == 'All') {
+                                        provider.filtereduserdetails =
+                                            provider.userdetails;
+                                      } else if (value == 'Age: Younger') {
+                                        provider.sortByAge(true);
+                                      } else if (value == 'Age: Elder') {
+                                        provider.sortByAge(false);
+                                      }
+                                    },
+                                    title: Text(
+                                      'All',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+
+                                  RadioListTile(
+                                    value: 'Age: Elder',
+                                    groupValue: sortvalueradiobutton,
+                                    onChanged: (value) {
+                                      setStateSheet(() {
+                                        sortvalueradiobutton = value!;
+                                      });
+                                      if (value == 'All') {
+                                        provider.filtereduserdetails =
+                                            provider.userdetails;
+                                      } else if (value == 'Age: Younger') {
+                                        provider.sortByAge(true);
+                                      } else if (value == 'Age: Elder') {
+                                        provider.sortByAge(false);
+                                      }
+                                    },
+                                    title: Text(
+                                      'Age: Elder',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  RadioListTile(
+                                    value: 'Age: Younger',
+                                    groupValue: sortvalueradiobutton,
+                                    onChanged: (value) {
+                                      setStateSheet(() {
+                                        sortvalueradiobutton = value!;
+                                      });
+                                      if (value == 'All') {
+                                        provider.filtereduserdetails =
+                                            provider.userdetails;
+                                      } else if (value == 'Age: Younger') {
+                                        provider.sortByAge(true);
+                                      } else if (value == 'Age: Elder') {
+                                        provider.sortByAge(false);
+                                      }
+                                    },
+                                    title: Text(
+                                      'Age: Younger',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.filter_list,
+                        color: Colors.white,
+                        size: 25,
+                      ),
                     ),
                   ),
                 ),

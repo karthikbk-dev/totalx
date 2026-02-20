@@ -11,6 +11,7 @@ class newuser extends StatelessWidget {
     final provider = Provider.of<UserProvider>(context);
     final namecontroller = TextEditingController();
     final agecontroller = TextEditingController();
+    final phonectrl = TextEditingController();
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
@@ -31,17 +32,15 @@ class newuser extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 children: [
                   InkWell(
-                    onTap: () {
-                      ImagePicker().pickImage(source: ImageSource.gallery);
+                    onTap: () async {
+                      provider.addimage(ImageSource.gallery);
                     },
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundColor: Colors.blue,
+                      // backgroundColor: Colors.blue,
                       backgroundImage: provider.imageBytes != null
                           ? MemoryImage(provider.imageBytes!)
-                          : AssetImage("assets/images/testimag.jpeg"),
-
-                      child: Icon(Icons.person, size: 70, color: Colors.white),
+                          : AssetImage("assets/images/download.png"),
                     ),
                   ),
                   Container(
@@ -64,7 +63,7 @@ class newuser extends StatelessWidget {
 
             const Text("Name", style: TextStyle(color: Color(0xFF333333))),
             const SizedBox(height: 8),
-            TextField(
+            TextFormField(
               controller: namecontroller,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 15),
@@ -79,7 +78,7 @@ class newuser extends StatelessWidget {
 
             Text("Age", style: TextStyle(color: Color(0xFF333333))),
             SizedBox(height: 8),
-            TextField(
+            TextFormField(
               controller: agecontroller,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -87,11 +86,23 @@ class newuser extends StatelessWidget {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                hintText: "Enter your page",
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade400,
-                  fontFamily: 'font3',
+                hintText: "Enter your age",
+                hintStyle: TextStyle(color: Colors.grey.shade400),
+              ),
+            ),
+            const SizedBox(height: 25),
+            Text("Number", style: TextStyle(color: Color(0xFF333333))),
+            SizedBox(height: 8),
+            TextFormField(
+              controller: phonectrl,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                hintText: "Enter your number",
+                hintStyle: TextStyle(color: Colors.grey.shade400),
               ),
             ),
             const SizedBox(height: 25),
@@ -117,11 +128,20 @@ class newuser extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    provider.adduser(
-                      name: namecontroller.text,
-                      age: agecontroller.text,
-                    );
+                  onPressed: () async {
+                    try {
+                      await provider.adduser(
+                        name: namecontroller.text.trim(),
+                        age: agecontroller.text.trim(),
+                        phone: phonectrl.text.trim(),
+                      );
+
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please fill all fields")),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

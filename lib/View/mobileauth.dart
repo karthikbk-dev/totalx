@@ -44,21 +44,39 @@ class MobileAuth extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    hint: RichText(
-                      text: TextSpan(
+                    label: RichText(
+                      text: const TextSpan(
                         children: [
                           TextSpan(
                             text: "Enter Phone Number",
-                            style: TextStyle(color: Color(0xFF888585)),
+                            style: TextStyle(color: Colors.black),
                           ),
                           TextSpan(
                             text: " *",
-                            style: TextStyle(color: Color(0xFFFF0000)),
+                            style: TextStyle(color: Colors.red),
                           ),
                         ],
                       ),
                     ),
+                    hintText: "Enter phone number",
                   ),
+
+                  /// ✅ VALIDATOR
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Phone number is required";
+                    }
+
+                    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return "Only numbers are allowed";
+                    }
+
+                    if (value.length != 10) {
+                      return "Phone number must be 10 digits";
+                    }
+
+                    return null;
+                  },
                 ),
                 SizedBox(height: 20),
 

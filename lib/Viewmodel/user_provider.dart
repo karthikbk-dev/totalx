@@ -1,85 +1,134 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:totalx_machine_test/model/usermodel.dart';
 
 class UserProvider extends ChangeNotifier {
-  List<Usermodel> userdetails = [];
-  XFile? image;
+  List<Usermodel> _userdetails = [];
+  List<Usermodel> _filtereduserdetails = [];
+
+  List<Usermodel> get userdetails => _userdetails;
+  List<Usermodel> get filtereduserdetails => _filtereduserdetails;
+
   Uint8List? imageBytes;
   String? base64Image;
 
-  set filtereduserdetails(List<Usermodel> filtereduserdetails) {}
+  // ------------------ FETCH DATA ------------------
 
   Future<void> fetchdata() async {
     final storage = await SharedPreferences.getInstance();
     final data = storage.getString("userdata");
+
     if (data != null) {
       final List decodedata = jsonDecode(data);
-      userdetails = decodedata.map((e) => Usermodel.fromjson(e)).toList();
+      _userdetails = decodedata.map((e) => Usermodel.fromjson(e)).toList();
+    } else {
+      _userdetails = [];
     }
+
+    _filtereduserdetails = List.from(_userdetails);
+
     notifyListeners();
   }
 
-  //...............create user.......................
+  // ------------------ SAVE TO STORAGE ------------------
 
-  Future<void> createUser() async {
+  Future<void> _saveToStorage() async {
     final storage = await SharedPreferences.getInstance();
-    final Data = userdetails.map((e) => e.tojson()).toList();
-    await storage.setString("userdata", jsonEncode(Data));
+    final data = _userdetails.map((e) => e.tojson()).toList();
+    await storage.setString("userdata", jsonEncode(data));
   }
 
-  void adduser({String? name, String? age, String? phone}) async {
-    try {
-      if (name != null && name.isNotEmpty && age != null && age.isNotEmpty
-      // phone != null &&
-      // phone.isNotEmpty &&
-      // base64Image != null
-      ) {
-        userdetails.add(
-          Usermodel(name: name, age: age, phone: phone, image: base64Image),
-        );
-        await createUser();
-        base64Image = null;
-        imageBytes = null;
-        image = null;
-        notifyListeners();
-      } else {
-        throw "validation error";
-      }
-    } catch (e) {
-      throw "add usser error:$e";
+  // ------------------ ADD USER ------------------
+
+  Future<void> adduser({
+    required String name,
+    required String age,
+    String? phone,
+  }) async {
+    if (name.isEmpty || age.isEmpty || base64Image == null) {
+      throw Exception("Validation error");
+    }
+
+    final newUser = Usermodel(
+      name: name,
+      age: age,
+      phone: phone,
+      image: base64Image,
+    );
+
+    _userdetails.add(newUser);
+
+    await _saveToStorage();
+
+    base64Image = null;
+    imageBytes = null;
+
+    _filtereduserdetails = List.from(_userdetails);
+
+    notifyListeners();
+  }
+
+  // ------------------ ADD IMAGE ------------------
+
+  Future<void> addimage(ImageSource source) async {
+    final pickedImage = await ImagePicker().pickImage(source: source);
+
+    if (pickedImage != null) {
+      imageBytes = await pickedImage.readAsBytes();
+      base64Image = base64Encode(imageBytes!);
+
+      notifyListeners();
     }
   }
 
-  //.................add image...............
+  // ------------------ SORT BY AGE ------------------
 
-  void addimage(ImageSource source) async {
-    try {
-      final pickimage = await ImagePicker().pickImage(source: source);
-      if (pickimage != null) {
-        image = pickimage;
-        imageBytes = await pickimage.readAsBytes();
-        base64Image = base64Encode(imageBytes!);
-        notifyListeners();
-        createUser();
-      }
-    } catch (e) {
-      throw "error: $e";
-    }
-  }
-
-  //...............sort...........
-
-  void sortByAge(bool ascending) {
-    userdetails.sort((a, b) {
+  void sortByAge({required bool ascending}) {
+    _filtereduserdetails.sort((a, b) {
       final ageA = int.tryParse(a.age ?? '') ?? 0;
       final ageB = int.tryParse(b.age ?? '') ?? 0;
 
-      return ascending ? ageB.compareTo(ageA) : ageA.compareTo(ageB);
+      return ascending
+          ? ageA.compareTo(ageB) // Younger → Elder
+          : ageB.compareTo(ageA); // Elder → Younger
     });
+
+    notifyListeners();
+  }
+
+  // ------------------ RESET FILTER ------------------
+
+  void resetFilter() {
+    _filtereduserdetails = List.from(_userdetails);
+    notifyListeners();
+  }
+
+  // ------------------ SEARCH BY NAME ------------------
+
+  void searchUser(String query) {
+    if (query.isEmpty) {
+      _filtereduserdetails = List.from(_userdetails);
+    } else {
+      _filtereduserdetails = _userdetails
+          .where(
+            (user) => user.name!.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
+    }
+
+    notifyListeners();
+  }
+
+  // ------------------ DELETE USER (Optional Bonus) ------------------
+
+  Future<void> deleteUser(int index) async {
+    _userdetails.removeAt(index);
+    _filtereduserdetails = List.from(_userdetails);
+    await _saveToStorage();
+    notifyListeners();
   }
 }
